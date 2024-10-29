@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Bot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        h1 {
+            color: #333;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        #qr-code {
+            margin-top: 20px;
+        }
+        img {
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>WhatsApp Bot Control Panel</h1>
+        <p>STATUS: <span id="status">Conectando...</span></p>
+        <div id="qr-code">
+            <p id="qr-span">Escaneie o QR code abaixo para conectar:</p>
+            <img id="qr-img" src="" alt="QR code será exibido aqui">
+        </div>
+        <button id="send-msg-btn">Enviar Mensagem de Teste</button>
+    </div>
+
+    <script>
+        // Função para buscar o QR code do servidor
+        function fetchQRCode() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    
+                    if (data.qrCode) {
+                        document.getElementById('qr-img').src = data.qrCode;
+                    } else {
+                        document.getElementById('qr-img').alt = "Gerando QR code...";
+                    }
+                    if (data.connected) {
+                        document.getElementById('status').textContent = "Conectado!";
+                        document.getElementById('qr-span').style.display = 'none';
+                        document.getElementById('qr-img').style.display = 'none';
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro ao buscar QR code:", err);
+                });
+        }
+
+        // Atualiza o QR code a cada 5 segundos
+        setInterval(fetchQRCode, 1000);
+
+        document.getElementById('send-msg-btn').addEventListener('click', function() {
+            alert('Este botão pode ser usado para enviar mensagens via interface.');
+            // Aqui você pode adicionar funcionalidade para enviar mensagens para um número específico
+        });
+    </script>
+</body>
+</html>
